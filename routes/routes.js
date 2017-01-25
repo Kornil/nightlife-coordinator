@@ -56,7 +56,9 @@ module.exports = function (app) {
                 res.redirect('/');
               })
             }else{
-              res.redirect('/');
+              Local.update({local_id: req.params.id},{$inc: { 'people_going': -1}, $pull: { users: req.user.username }}).exec().then(function(){
+                res.redirect('/');
+              })
             }
 
           }else{
