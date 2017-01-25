@@ -60,11 +60,11 @@
         type: "POST"
       })
       .done(function (data) {
+        $("#search-input").val("");
+        $("#places").empty();
         for(var i = 0; i < 10; i++){
           createButton(data.businesses[i])
         }
-        $("#search-input").val("");
-        $("#places").empty();
         //console.log(data);
       });
       e.preventDefault();
