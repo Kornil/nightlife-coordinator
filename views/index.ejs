@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./partials/head %>
+  </head>
+  <body>
+    
+    <% include ./partials/nav %>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <% if (typeof user !== "undefined") { %>
+          <h1>Hey <%= user.username %> you are awesome!</h1>
+        <% } %>
+      </div>
+
+      <form role="form" id="search" >
+        <div class="form-group">
+          <input class="form-control" type="text" placeholder="Enter your city" value="" id="search-input" required>
+        </div>
+        <button id="submit" class="btn btn-default">Submit</button>
+      </form>
+
+      <div id="places">
+        <!-- array of places -->
+      </div>
+
+    </div><!-- /.container -->
+
+    <script>
+    var bars = <%- JSON.stringify(locals) %>;
+    function createButton(data){
+      var elem = 0;
+      for(var i = 0; i<bars.length; i++){
+        if(bars[i].local_id === data.id){
+          elem = bars[i].people_going;
+        }
+      }
+           
+      var $button = $('<button>', {
+        class: "btn btn-default add-local",
+        id: data.id,
+        html: data.name+" - "+data.snippet_text+"<br>"+
+          "Going: "+elem,
+        click: function(){
+          var id = $(this).attr('id');
+          $.ajax({
+            url: '/going/'+id,
+            type: 'POST',
+          });
+        }
+      });          
+      $button.appendTo($("#places"));
+    }
+
+    $("#search").submit(function(e){
+      $.ajax({
+        url: "/search/"+$("#search-input").val(),
+        type: "POST"
+      })
+      .done(function (data) {
+        for(var i = 0; i < 10; i++){
+          createButton(data.businesses[i])
+        }
+        $("#search-input").val("");
+        console.log(data);
+      });
+      e.preventDefault();
+    });
+    </script>
+  </body>
+</html>
