@@ -50,7 +50,7 @@ module.exports = function (app) {
       Local.find({local_id: req.params.id}).exec()
         .then(function(elem){
           if (elem.length){
-            console.log(elem)
+            console.log(elem.users)
             if(elem.users.includes(req.user.username)){
               console.log("it was here ",elem.users)
               Local.update({local_id: req.params.id},{$inc: { 'people_going': 1}, $push: { users: req.user.username }}).exec().then(function(){
